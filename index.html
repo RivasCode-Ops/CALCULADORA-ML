@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora ML - Lucro Real</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+    <meta name="description" content="Calculadora de lucro do Mercado Livre - Calcule o valor líquido real por venda">
+    <meta name="theme-color" content="#FFE600">
+</head>
+<body>
+    <div class="app">
+        <header class="header">
+            <div class="header-brand">
+                <span class="logo">📊</span>
+                <div>
+                    <h1>Calculadora ML</h1>
+                    <p>Lucro real por venda</p>
+                </div>
+            </div>
+            <button class="btn-icon" id="resetBtn" title="Limpar tudo">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                </svg>
+            </button>
+        </header>
+
+        <main class="calculator">
+            <section class="section">
+                <h2 class="section-title">Valores da Venda</h2>
+                <div class="input-group">
+                    <label for="saleValue">Valor de venda</label>
+                    <div class="input-currency">
+                        <span class="currency-prefix">R$</span>
+                        <input type="text" id="saleValue" placeholder="0,00" inputmode="decimal">
+                    </div>
+                </div>
+            </section>
+
+            <section class="section section-fees">
+                <div class="section-header">
+                    <h2 class="section-title">Taxas do Mercado Livre</h2>
+                    <span class="section-badge">Padrão: 10,5% + R$ 5,50</span>
+                </div>
+                <div class="fee-grid">
+                    <div class="input-group">
+                        <label for="feePercent">Percentual</label>
+                        <div class="input-suffix">
+                            <input type="text" id="feePercent" value="10,5" inputmode="decimal">
+                            <span class="suffix">%</span>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="feeFixed">Taxa fixa</label>
+                        <div class="input-currency">
+                            <span class="currency-prefix">R$</span>
+                            <input type="text" id="feeFixed" value="5,50" inputmode="decimal">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2 class="section-title">Custos</h2>
+                <div class="input-group">
+                    <label for="productCost">Custo do produto</label>
+                    <div class="input-currency">
+                        <span class="currency-prefix">R$</span>
+                        <input type="text" id="productCost" placeholder="0,00" inputmode="decimal">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="shipping">Frete pago por você</label>
+                    <div class="input-currency">
+                        <span class="currency-prefix">R$</span>
+                        <input type="text" id="shipping" value="0,00" inputmode="decimal">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="otherExpenses">Outras despesas</label>
+                    <div class="input-currency">
+                        <span class="currency-prefix">R$</span>
+                        <input type="text" id="otherExpenses" value="0,00" inputmode="decimal">
+                    </div>
+                </div>
+            </section>
+
+            <button class="btn-calculate" id="calculateBtn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <rect x="4" y="2" width="16" height="20" rx="2"/>
+                    <line x1="8" y1="6" x2="16" y2="6"/>
+                    <line x1="8" y1="10" x2="16" y2="10"/>
+                    <line x1="8" y1="14" x2="12" y2="14"/>
+                </svg>
+                Calcular Lucro
+            </button>
+
+            <section class="results" id="results">
+                <div class="result-hero">
+                    <div class="result-hero-content">
+                        <span class="result-hero-label">Lucro Líquido</span>
+                        <span class="result-hero-value" id="netProfit">R$ 0,00</span>
+                    </div>
+                    <div class="result-hero-badge" id="profitBadge">
+                        <span class="badge-icon">✓</span>
+                        <span class="badge-text">Lucrando</span>
+                    </div>
+                </div>
+
+                <div class="result-metric">
+                    <div class="metric-header">
+                        <span class="metric-label">Margem de lucro</span>
+                        <span class="metric-value" id="margin">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="marginFill"></div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <button class="breakdown-toggle" id="breakdownToggle">
+                        <span>Detalhamento</span>
+                        <svg class="toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                    </button>
+                    <div class="breakdown-content" id="breakdownContent">
+                        <div class="breakdown-list">
+                            <div class="breakdown-item">
+                                <span>Valor da venda</span>
+                                <span id="breakdownSale">R$ 0,00</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span>Taxa ML (%)</span>
+                                <span id="breakdownFeePercent">- R$ 0,00</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span>Taxa fixa ML</span>
+                                <span id="breakdownFeeFixed">- R$ 0,00</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span>Custo do produto</span>
+                                <span id="breakdownCost">- R$ 0,00</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span>Frete</span>
+                                <span id="breakdownShipping">- R$ 0,00</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span>Outras despesas</span>
+                                <span id="breakdownExpenses">- R$ 0,00</span>
+                            </div>
+                            <div class="breakdown-divider"></div>
+                            <div class="breakdown-item total">
+                                <span>Total de custos</span>
+                                <span id="breakdownTotalCosts">- R$ 0,00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="mode-toggle">
+                <label class="switch">
+                    <input type="checkbox" id="simulationMode">
+                    <span class="slider"></span>
+                </label>
+                <span class="mode-label">Modo simulação</span>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>Taxa ML pode variar por categoria • Valores em reais (BRL)</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
