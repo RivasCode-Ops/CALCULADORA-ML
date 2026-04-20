@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora ML - Lucro Real</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+    <meta name="description" content="Calculadora de lucro do Mercado Livre - Calcule o valor líquido real por venda">
+    <meta name="theme-color" content="#FFE600">
+    <style>
+:root {
+    --ml-yellow: #FFE600;
+    --ml-yellow-light: #FFF3A0;
+    --ml-green: #00A650;
+    --ml-green-dark: #00853F;
+    --text-primary: #1A1A1A;
+    --text-secondary: #5A5A5A;
+    --text-tertiary: #8B8B8B;
+    --bg-page: #F0F2F5;
+    --bg-card: #FFFFFF;
+    --bg-input: #FAFAFA;
+    --border: #E5E5E5;
+    --border-focus: #333333;
+    --danger: #FF3B30;
+    --danger-bg: #FFF0EE;
+    --success: #00A650;
+    --success-bg: #EAFaf1;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg-page); color: var(--text-primary); min-height: 100vh; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+.app { max-width: 440px; margin: 0 auto; padding: 16px 16px 80px; min-height: 100vh; }
+.header { display: flex; align-items: center; justify-content: space-between; padding: 8px 0 24px; }
+.header-brand { display: flex; align-items: center; gap: 12px; }
+.logo { font-size: 32px; line-height: 1; }
+.header-brand h1 { font-size: 22px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.5px; }
+.header-brand p { font-size: 13px; color: var(--text-secondary); }
+.btn-icon { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-secondary); cursor: pointer; transition: var(--transition); }
+.btn-icon:hover { background: var(--bg-page); color: var(--text-primary); }
+.calculator { display: flex; flex-direction: column; gap: 16px; }
+.section { background: var(--bg-card); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow-sm); }
+.section-title { font-size: 13px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; }
+.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.section-badge { font-size: 11px; font-weight: 500; color: var(--ml-green); background: var(--success-bg); padding: 4px 8px; border-radius: 20px; }
+.input-group { margin-bottom: 12px; }
+.input-group:last-child { margin-bottom: 0; }
+.input-group label { display: block; font-size: 13px; font-weight: 500; color: var(--text-secondary); margin-bottom: 6px; }
+.input-currency { display: flex; align-items: center; background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius-sm); transition: var(--transition); overflow: hidden; }
+.input-currency:focus-within { border-color: var(--border-focus); box-shadow: 0 0 0 3px rgba(0,0,0,0.05); }
+.currency-prefix { font-size: 15px; font-weight: 500; color: var(--text-tertiary); padding: 0 12px; user-select: none; }
+.input-currency input { flex: 1; padding: 12px 12px 12px 0; font-size: 15px; font-weight: 500; color: var(--text-primary); border: none; background: transparent; outline: none; font-family: inherit; }
+.input-currency input::placeholder { color: #BBB; }
+.input-suffix { display: flex; align-items: center; background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius-sm); transition: var(--transition); }
+.input-suffix:focus-within { border-color: var(--border-focus); box-shadow: 0 0 0 3px rgba(0,0,0,0.05); }
+.input-suffix input { flex: 1; padding: 12px; font-size: 15px; font-weight: 500; color: var(--text-primary); border: none; background: transparent; outline: none; font-family: inherit; text-align: right; }
+.input-suffix .suffix { font-size: 15px; font-weight: 500; color: var(--text-tertiary); padding: 0 12px; user-select: none; }
+.fee-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.btn-calculate { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 16px; background: var(--ml-yellow); border: none; border-radius: var(--radius-sm); font-size: 15px; font-weight: 600; color: var(--text-primary); cursor: pointer; transition: var(--transition); box-shadow: var(--shadow-sm); }
+.btn-calculate:hover { background: var(--ml-yellow-light); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.btn-calculate:active { transform: translateY(0); }
+.results { display: none; background: var(--bg-card); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); overflow: hidden; animation: slideUp 0.3s ease-out; }
+.results.active { display: block; }
+@keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+.result-hero { background: linear-gradient(135deg, var(--ml-green) 0%, var(--ml-green-dark) 100%); padding: 24px; color: white; }
+.result-hero-content { display: flex; flex-direction: column; gap: 4px; margin-bottom: 16px; }
+.result-hero-label { font-size: 14px; font-weight: 500; opacity: 0.9; }
+.result-hero-value { font-size: 36px; font-weight: 700; letter-spacing: -1px; }
+.result-hero-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 500; }
+.result-hero-badge.loss { background: rgba(255,255,255,0.15); }
+.badge-icon { font-size: 14px; }
+.result-metric { padding: 20px; border-bottom: 1px solid var(--border); }
+.metric-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.metric-label { font-size: 14px; color: var(--text-secondary); }
+.metric-value { font-size: 18px; font-weight: 700; color: var(--text-primary); }
+.progress-bar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--ml-green); border-radius: 4px; transition: width 0.4s ease-out; width: 0%; }
+.progress-fill.danger { background: var(--danger); }
+.breakdown { border-top: 1px solid var(--border); }
+.breakdown-toggle { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 16px 20px; background: none; border: none; font-size: 14px; font-weight: 600; color: var(--text-primary); cursor: pointer; text-align: left; }
+.toggle-icon { transition: transform 0.3s ease; }
+.breakdown-toggle[aria-expanded="true"] .toggle-icon { transform: rotate(180deg); }
+.breakdown-content { display: none; padding: 0 20px 20px; }
+.breakdown-content.open { display: block; }
+.breakdown-list { display: flex; flex-direction: column; gap: 8px; }
+.breakdown-item { display: flex; justify-content: space-between; font-size: 14px; color: var(--text-secondary); }
+.breakdown-item span:last-child { font-weight: 500; color: var(--text-primary); }
+.breakdown-divider { height: 1px; background: var(--border); margin: 8px 0; }
+.breakdown-item.total { font-weight: 600; color: var(--text-primary); }
+.breakdown-item.total span:last-child { color: var(--danger); }
+.mode-toggle { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px; }
+.switch { position: relative; width: 44px; height: 24px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: var(--border); border-radius: 24px; transition: var(--transition); }
+.slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: var(--transition); box-shadow: var(--shadow-sm); }
+.switch input:checked + .slider { background: var(--ml-yellow); }
+.switch input:checked + .slider:before { transform: translateX(20px); }
+.mode-label { font-size: 13px; color: var(--text-secondary); }
+.tabs { display: flex; gap: 4px; background: var(--border); padding: 4px; border-radius: var(--radius-sm); margin-bottom: 16px; }
+.tab { flex: 1; padding: 10px 16px; background: transparent; border: none; border-radius: 6px; font-size: 13px; font-weight: 500; color: var(--text-secondary); cursor: pointer; transition: var(--transition); }
+.tab.active { background: var(--bg-card); color: var(--text-primary); box-shadow: var(--shadow-sm); }
+.tab-content { display: none; }
+.tab-content.active { display: block; animation: fadeIn 0.2s ease-out; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.result-actions { display: flex; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--bg-page); }
+.btn-action { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-secondary); cursor: pointer; transition: var(--transition); }
+.btn-action:hover { background: var(--bg-input); color: var(--text-primary); border-color: var(--text-secondary); }
+.btn-action:active { transform: scale(0.95); }
+.result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px 20px; border-top: 1px solid var(--border); }
+.result-card { display: flex; flex-direction: column; gap: 4px; }
+.result-card .result-label { font-size: 12px; color: var(--text-secondary); }
+.result-card .result-value { font-size: 16px; font-weight: 600; color: var(--text-primary); }
+.section-desc { font-size: 13px; color: var(--text-tertiary); margin-top: -8px; margin-bottom: 16px; }
+.btn-small { padding: 6px 12px; background: transparent; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 12px; font-weight: 500; color: var(--text-secondary); cursor: pointer; transition: var(--transition); }
+.btn-small:hover { background: var(--danger-bg); border-color: var(--danger); color: var(--danger); }
+.history-list { display: flex; flex-direction: column; gap: 8px; max-height: 400px; overflow-y: auto; }
+.history-empty { text-align: center; padding: 32px 16px; color: var(--text-tertiary); }
+.history-empty-icon { font-size: 32px; display: block; margin-bottom: 8px; }
+.history-empty p { font-size: 14px; }
+.history-empty-sub { font-size: 12px !important; margin-top: 4px; }
+.history-item { display: flex; align-items: center; justify-content: space-between; padding: 12px; background: var(--bg-input); border-radius: var(--radius-sm); cursor: pointer; transition: var(--transition); }
+.history-item:hover { background: var(--border); }
+.history-item-main { display: flex; flex-direction: column; gap: 2px; }
+.history-item-sale { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+.history-item-profit { font-size: 13px; font-weight: 500; }
+.history-item-profit.positive { color: var(--ml-green); }
+.history-item-profit.negative { color: var(--danger); }
+.history-item-meta { display: flex; align-items: center; gap: 8px; }
+.history-item-margin { font-size: 12px; color: var(--text-tertiary); }
+.history-item-delete { padding: 4px; background: none; border: none; color: var(--text-tertiary); cursor: pointer; opacity: 0; transition: var(--transition); }
+.history-item:hover .history-item-delete { opacity: 1; }
+.history-item-delete:hover { color: var(--danger); }
+.footer { text-align: center; padding: 24px 0 0; }
+.footer p { font-size: 12px; color: var(--text-tertiary); }
+input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+input[type="number"] { -moz-appearance: textfield; }
+@media (max-width: 400px) { .app { padding: 12px 12px 80px; } .section { padding: 16px; } .result-hero { padding: 20px; } .result-hero-value { font-size: 28px; } }
+@media (prefers-color-scheme: dark) { :root { --ml-yellow: #FFD700; --ml-yellow-light: #FFE666; --text-primary: #F5F5F5; --text-secondary: #A0A0A0; --text-tertiary: #707070; --bg-page: #121212; --bg-card: #1E1E1E; --bg-input: #2A2A2A; --border: #333333; --border-focus: #555555; --success-bg: rgba(0, 166, 80, 0.15); } .result-hero { background: linear-gradient(135deg, var(--ml-green-dark) 0%, #006B3A 100%); } }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <header class="header">
+            <div class="header-brand">
+                <span class="logo">📊</span>
+                <div>
+                    <h1>Calculadora ML</h1>
+                    <p>Lucro real por venda</p>
+                </div>
+            </div>
+            <button class="btn-icon" id="resetBtn" title="Limpar tudo">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+            </button>
+        </header>
+        <nav class="tabs">
+            <button class="tab active" data-tab="calc">Calculadora</button>
+            <button class="tab" data-tab="reverse">Reversa</button>
+            <button class="tab" data-tab="history">Histórico</button>
+        </nav>
+        <main class="calculator">
+            <div class="tab-content active" id="tab-calc">
+                <section class="section">
+                    <h2 class="section-title">Valores da Venda</h2>
+                    <div class="input-group">
+                        <label for="saleValue">Valor de venda</label>
+                        <div class="input-currency">
+                            <span class="currency-prefix">R$</span>
+                            <input type="text" id="saleValue" placeholder="0,00" inputmode="decimal">
+                        </div>
+                    </div>
+                </section>
+                <section class="section section-fees">
+                    <div class="section-header">
+                        <h2 class="section-title">Taxas do Mercado Livre</h2>
+                        <span class="section-badge">Padrão: 10,5% + R$ 5,50</span>
+                    </div>
+                    <div class="fee-grid">
+                        <div class="input-group">
+                            <label for="feePercent">Percentual</label>
+                            <div class="input-suffix">
+                                <input type="text" id="feePercent" value="10,5" inputmode="decimal">
+                                <span class="suffix">%</span>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="feeFixed">Taxa fixa</label>
+                            <div class="input-currency">
+                                <span class="currency-prefix">R$</span>
+                                <input type="text" id="feeFixed" value="5,50" inputmode="decimal">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="section">
+                    <h2 class="section-title">Custos</h2>
+                    <div class="input-group">
+                        <label for="productCost">Custo do produto</label>
+                        <div class="input-currency">
+                            <span class="currency-prefix">R$</span>
+                            <input type="text" id="productCost" placeholder="0,00" inputmode="decimal">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="shipping">Frete pago por você</label>
+                        <div class="input-currency">
+                            <span class="currency-prefix">R$</span>
+                            <input type="text" id="shipping" value="0,00" inputmode="decimal">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="otherExpenses">Outras despesas</label>
+                        <div class="input-currency">
+                            <span class="currency-prefix">R$</span>
+                            <input type="text" id="otherExpenses" value="0,00" inputmode="decimal">
+                        </div>
+                    </div>
+                </section>
+                <button class="btn-calculate" id="calculateBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>
+                    Calcular Lucro
+                </button>
+                <section class="results" id="results">
+                    <div class="result-actions">
+                        <button class="btn-action" id="saveBtn" title="Salvar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg></button>
+                        <button class="btn-action" id="copyBtn" title="Copiar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button>
+                        <button class="btn-action" id="shareBtn" title="Compartilhar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
+                    </div>
+                    <div class="result-hero">
+                        <div class="result-hero-content">
+                            <span class="result-hero-label">Lucro Líquido</span>
+                            <span class="result-hero-value" id="netProfit">R$ 0,00</span>
+                        </div>
+                        <div class="result-hero-badge" id="profitBadge">
+                            <span class="badge-icon">✓</span>
+                            <span class="badge-text">Lucrando</span>
+                        </div>
+                    </div>
+                    <div class="result-metric">
+                        <div class="metric-header">
+                            <span class="metric-label">Margem de lucro</span>
+                            <span class="metric-value" id="margin">0%</span>
+                        </div>
+                        <div class="progress-bar"><div class="progress-fill" id="marginFill"></div></div>
+                    </div>
+                    <div class="breakdown">
+                        <button class="breakdown-toggle" id="breakdownToggle"><span>Detalhamento</span><svg class="toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+                        <div class="breakdown-content" id="breakdownContent">
+                            <div class="breakdown-list">
+                                <div class="breakdown-item"><span>Valor da venda</span><span id="breakdownSale">R$ 0,00</span></div>
+                                <div class="breakdown-item"><span>Taxa ML (%)</span><span id="breakdownFeePercent">- R$ 0,00</span></div>
+                                <div class="breakdown-item"><span>Taxa fixa ML</span><span id="breakdownFeeFixed">- R$ 0,00</span></div>
+                                <div class="breakdown-item"><span>Custo do produto</span><span id="breakdownCost">- R$ 0,00</span></div>
+                                <div class="breakdown-item"><span>Frete</span><span id="breakdownShipping">- R$ 0,00</span></div>
+                                <div class="breakdown-item"><span>Outras despesas</span><span id="breakdownExpenses">- R$ 0,00</span></div>
+                                <div class="breakdown-divider"></div>
+                                <div class="breakdown-item total"><span>Total de custos</span><span id="breakdownTotalCosts">- R$ 0,00</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <div class="mode-toggle">
+                    <label class="switch"><input type="checkbox" id="simulationMode"><span class="slider"></span></label>
+                    <span class="mode-label">Modo simulação</span>
+                </div>
+            </div>
+            <div class="tab-content" id="tab-reverse">
+                <section class="section">
+                    <h2 class="section-title">Calculadora Reversa</h2>
+                    <p class="section-desc">Descubra o preço de venda para atingir o lucro desejado</p>
+                    <div class="input-group">
+                        <label for="targetProfit">Lucro desejado (R$)</label>
+                        <div class="input-currency"><span class="currency-prefix">R$</span><input type="text" id="targetProfit" placeholder="0,00" inputmode="decimal"></div>
+                    </div>
+                    <div class="input-group">
+                        <label for="targetMargin">Margem esperada (%)</label>
+                        <div class="input-suffix"><input type="text" id="targetMargin" placeholder="0" inputmode="decimal"><span class="suffix">%</span></div>
+                    </div>
+                </section>
+                <section class="section section-fees">
+                    <div class="section-header"><h2 class="section-title">Custos Fixos</h2></div>
+                    <div class="fee-grid">
+                        <div class="input-group">
+                            <label for="revFeePercent">Taxa ML (%)</label>
+                            <div class="input-suffix"><input type="text" id="revFeePercent" value="10,5" inputmode="decimal"><span class="suffix">%</span></div>
+                        </div>
+                        <div class="input-group">
+                            <label for="revFeeFixed">Taxa fixa (R$)</label>
+                            <div class="input-currency"><span class="currency-prefix">R$</span><input type="text" id="revFeeFixed" value="5,50" inputmode="decimal"></div>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="revProductCost">Custo do produto (R$)</label>
+                        <div class="input-currency"><span class="currency-prefix">R$</span><input type="text" id="revProductCost" placeholder="0,00" inputmode="decimal"></div>
+                    </div>
+                    <div class="input-group">
+                        <label for="revShipping">Frete (R$)</label>
+                        <div class="input-currency"><span class="currency-prefix">R$</span><input type="text" id="revShipping" value="0,00" inputmode="decimal"></div>
+                    </div>
+                    <div class="input-group">
+                        <label for="revOtherExpenses">Outras despesas (R$)</label>
+                        <div class="input-currency"><span class="currency-prefix">R$</span><input type="text" id="revOtherExpenses" value="0,00" inputmode="decimal"></div>
+                    </div>
+                </section>
+                <button class="btn-calculate" id="calculateReverseBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+                    Calcular Preço de Venda
+                </button>
+                <section class="results" id="resultsReverse">
+                    <div class="result-hero">
+                        <div class="result-hero-content">
+                            <span class="result-hero-label">Preço de Venda Sugerido</span>
+                            <span class="result-hero-value" id="recommendedPrice">R$ 0,00</span>
+                        </div>
+                    </div>
+                    <div class="result-grid">
+                        <div class="result-card"><span class="result-label">Para margem de</span><span class="result-value" id="reverseMarginCalc">0%</span></div>
+                        <div class="result-card"><span class="result-label">Lucro líquido</span><span class="result-value" id="reverseProfitCalc">R$ 0,00</span></div>
+                    </div>
+                </section>
+            </div>
+            <div class="tab-content" id="tab-history">
+                <section class="section">
+                    <div class="section-header">
+                        <h2 class="section-title">Histórico de Cálculos</h2>
+                        <button class="btn-small" id="clearHistoryBtn">Limpar</button>
+                    </div>
+                    <div class="history-list" id="historyList">
+                        <div class="history-empty">
+                            <span class="history-empty-icon">📋</span>
+                            <p>Nenhum cálculo salvo</p>
+                            <p class="history-empty-sub">Clique em 💾 para salvar um cálculo</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+        <footer class="footer"><p>Taxa ML pode variar por categoria • Valores em reais (BRL)</p></footer>
+    </div>
+    <script>
+(function() {
+    'use strict';
+    const STORAGE_KEY = 'calculadora_ml_history';
+    const CONFIG_KEY = 'calculadora_ml_config';
+    let currentCalculation = null;
+    function getElement(id) { return document.getElementById(id); }
+    function parseNumber(value) { if (!value) return 0; const cleaned = String(value).replace(/[^\d,-]/g, '').replace(',', '.'); return parseFloat(cleaned) || 0; }
+    function formatCurrency(value) { return 'R$ ' + value.toFixed(2).replace('.', ','); }
+    function formatInput(el) { const value = parseNumber(el.value); if (value === 0) { el.value = ''; return; } el.value = value.toFixed(2).replace('.', ','); }
+    function calculate() {
+        const saleValue = parseNumber(getElement('saleValue').value);
+        const shipping = parseNumber(getElement('shipping').value);
+        const productCost = parseNumber(getElement('productCost').value);
+        const otherExpenses = parseNumber(getElement('otherExpenses').value);
+        const feePercent = parseNumber(getElement('feePercent').value);
+        const feeFixed = parseNumber(getElement('feeFixed').value);
+        if (saleValue === 0) { getElement('saleValue').focus(); return; }
+        const feeAmount = saleValue * (feePercent / 100);
+        const totalCosts = productCost + otherExpenses + feeAmount + feeFixed + shipping;
+        const netProfit = saleValue - totalCosts;
+        const margin = saleValue > 0 ? (netProfit / saleValue) * 100 : 0;
+        currentCalculation = { saleValue, shipping, productCost, otherExpenses, feePercent, feeFixed, feeAmount, totalCosts, netProfit, margin, timestamp: Date.now() };
+        getElement('netProfit').textContent = formatCurrency(netProfit);
+        getElement('netProfit').className = 'result-hero-value ' + (netProfit >= 0 ? '' : 'loss');
+        const isProfit = netProfit >= 0;
+        getElement('profitBadge').className = 'result-hero-badge' + (isProfit ? '' : ' loss');
+        getElement('profitBadge').querySelector('.badge-text').textContent = isProfit ? 'Lucrando' : 'Prejuízo';
+        getElement('profitBadge').querySelector('.badge-icon').textContent = isProfit ? '✓' : '✕';
+        getElement('margin').textContent = margin.toFixed(1) + '%';
+        getElement('margin').className = 'metric-value ' + (margin >= 0 ? '' : 'loss');
+        const fill = getElement('marginFill');
+        fill.style.width = Math.max(0, Math.min(100, margin)) + '%';
+        fill.className = 'progress-fill' + (margin < 0 ? ' danger' : '');
+        getElement('breakdownSale').textContent = formatCurrency(saleValue);
+        getElement('breakdownFeePercent').textContent = '- ' + formatCurrency(feeAmount);
+        getElement('breakdownFeeFixed').textContent = '- ' + formatCurrency(feeFixed);
+        getElement('breakdownCost').textContent = '- ' + formatCurrency(productCost);
+        getElement('breakdownShipping').textContent = '- ' + formatCurrency(shipping);
+        getElement('breakdownExpenses').textContent = '- ' + formatCurrency(otherExpenses);
+        getElement('breakdownTotalCosts').textContent = '- ' + formatCurrency(totalCosts);
+        getElement('results').classList.add('active');
+        if (getElement('simulationMode').checked) { window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }); }
+    }
+    function calculateReverse() {
+        const targetProfit = parseNumber(getElement('targetProfit').value);
+        const targetMargin = parseNumber(getElement('targetMargin').value);
+        const feePercent = parseNumber(getElement('revFeePercent').value);
+        const feeFixed = parseNumber(getElement('revFeeFixed').value);
+        const productCost = parseNumber(getElement('revProductCost').value);
+        const shipping = parseNumber(getElement('revShipping').value);
+        const otherExpenses = parseNumber(getElement('revOtherExpenses').value);
+        if (targetProfit === 0 && targetMargin === 0) { getElement('targetProfit').focus(); return; }
+        let saleValue;
+        if (targetMargin > 0) {
+            const feeDecimal = feePercent / 100;
+            const totalCosts = productCost + shipping + otherExpenses + feeFixed;
+            saleValue = totalCosts / (1 - feeDecimal - (targetMargin / 100));
+        } else {
+            const feeDecimal = feePercent / 100;
+            const totalCosts = productCost + shipping + otherExpenses + feeFixed + targetProfit;
+            saleValue = totalCosts / (1 - feeDecimal);
+        }
+        const feeAmount = saleValue * (feePercent / 100);
+        const totalCosts = productCost + shipping + otherExpenses + feeAmount + feeFixed;
+        const netProfit = saleValue - totalCosts;
+        const margin = saleValue > 0 ? (netProfit / saleValue) * 100 : 0;
+        getElement('recommendedPrice').textContent = formatCurrency(saleValue);
+        getElement('reverseMarginCalc').textContent = margin.toFixed(1) + '%';
+        getElement('reverseProfitCalc').textContent = formatCurrency(netProfit);
+        getElement('resultsReverse').classList.add('active');
+    }
+    function reset() {
+        getElement('saleValue').value = '';
+        getElement('productCost').value = '';
+        getElement('shipping').value = '0,00';
+        getElement('otherExpenses').value = '0,00';
+        getElement('feePercent').value = '10,5';
+        getElement('feeFixed').value = '5,50';
+        getElement('results').classList.remove('active');
+        currentCalculation = null;
+        getElement('saleValue').focus();
+    }
+    function toggleBreakdown() {
+        const btn = getElement('breakdownToggle');
+        const content = getElement('breakdownContent');
+        const isOpen = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', !isOpen);
+        content.classList.toggle('open', !isOpen);
+    }
+    function getHistory() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; } }
+    function saveHistory() {
+        if (!currentCalculation) return;
+        const history = getHistory();
+        history.unshift(currentCalculation);
+        if (history.length > 50) { history.pop(); }
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+        renderHistory();
+    }
+    function deleteHistory(index) {
+        const history = getHistory();
+        history.splice(index, 1);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+        renderHistory();
+    }
+    function clearHistory() { localStorage.removeItem(STORAGE_KEY); renderHistory(); }
+    function loadHistoryItem(index) {
+        const history = getHistory();
+        const item = history[index];
+        if (!item) return;
+        getElement('saleValue').value = item.saleValue ? item.saleValue.toFixed(2).replace('.', ',') : '';
+        getElement('productCost').value = item.productCost ? item.productCost.toFixed(2).replace('.', ',') : '';
+        getElement('shipping').value = item.shipping ? item.shipping.toFixed(2).replace('.', ',') : '0,00';
+        getElement('otherExpenses').value = item.otherExpenses ? item.otherExpenses.toFixed(2).replace('.', ',') : '0,00';
+        getElement('feePercent').value = item.feePercent ? item.feePercent.toString().replace('.', ',') : '10,5';
+        getElement('feeFixed').value = item.feeFixed ? item.feeFixed.toFixed(2).replace('.', ',') : '5,50';
+        switchTab('calc');
+        calculate();
+    }
+    function renderHistory() {
+        const history = getHistory();
+        const container = getElement('historyList');
+        if (history.length === 0) {
+            container.innerHTML = '<div class="history-empty"><span class="history-empty-icon">📋</span><p>Nenhum cálculo salvo</p><p class="history-empty-sub">Clique em 💾 para salvar um cálculo</p></div>';
+            return;
+        }
+        container.innerHTML = history.map((item, index) => '<div class="history-item" data-index="' + index + '"><div class="history-item-main"><span class="history-item-sale">Venda: ' + formatCurrency(item.saleValue) + '</span><span class="history-item-profit ' + (item.netProfit >= 0 ? 'positive' : 'negative') + '">' + (item.netProfit >= 0 ? '+' : '') + formatCurrency(item.netProfit) + '</span></div><div class="history-item-meta"><span class="history-item-margin">' + item.margin.toFixed(1) + '%</span><button class="history-item-delete" data-index="' + index + '" title="Excluir"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button></div></div>').join('');
+        container.querySelectorAll('.history-item').forEach(el => { el.addEventListener('click', e => { if (e.target.closest('.history-item-delete')) return; loadHistoryItem(parseInt(el.dataset.index)); }); });
+        container.querySelectorAll('.history-item-delete').forEach(btn => { btn.addEventListener('click', e => { e.stopPropagation(); deleteHistory(parseInt(btn.dataset.index)); }); });
+    }
+    function copyCalculation() {
+        if (!currentCalculation) return;
+        const text = '📊 Cálculo ML\nVenda: ' + formatCurrency(currentCalculation.saleValue) + '\nCustos: ' + formatCurrency(currentCalculation.totalCosts) + '\nLucro: ' + formatCurrency(currentCalculation.netProfit) + '\nMargem: ' + currentCalculation.margin.toFixed(1) + '%';
+        navigator.clipboard.writeText(text).then(() => {
+            const btn = getElement('copyBtn');
+            btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
+            setTimeout(() => { btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>'; }, 2000);
+        });
+    }
+    function shareCalculation() {
+        if (!currentCalculation) return;
+        const text = 'Vendi por ' + formatCurrency(currentCalculation.saleValue) + ' no ML, lucro líquido: ' + formatCurrency(currentCalculation.netProfit) + ' (' + currentCalculation.margin.toFixed(1) + '%)';
+        if (navigator.share) { navigator.share({ text }); } else { navigator.clipboard.writeText(text); }
+    }
+    function switchTab(tabName) {
+        document.querySelectorAll('.tab').forEach(tab => { tab.classList.toggle('active', tab.dataset.tab === tabName); });
+        document.querySelectorAll('.tab-content').forEach(content => { content.classList.toggle('active', content.id === 'tab-' + tabName); });
+    }
+    function setupInputFormats() {
+        const currencyInputs = ['saleValue', 'productCost', 'shipping', 'otherExpenses', 'feeFixed', 'targetProfit', 'revFeeFixed', 'revProductCost', 'revShipping', 'revOtherExpenses'];
+        currencyInputs.forEach(id => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.addEventListener('blur', () => formatInput(el));
+            el.addEventListener('focus', () => { if (parseNumber(el.value) === 0) { el.value = ''; } });
+        });
+    }
+    function init() {
+        getElement('calculateBtn').addEventListener('click', calculate);
+        getElement('resetBtn').addEventListener('click', reset);
+        getElement('breakdownToggle').addEventListener('click', toggleBreakdown);
+        getElement('saveBtn').addEventListener('click', saveHistory);
+        getElement('copyBtn').addEventListener('click', copyCalculation);
+        getElement('shareBtn').addEventListener('click', shareCalculation);
+        getElement('clearHistoryBtn').addEventListener('click', clearHistory);
+        getElement('calculateReverseBtn').addEventListener('click', calculateReverse);
+        document.querySelectorAll('.tab').forEach(tab => { tab.addEventListener('click', () => switchTab(tab.dataset.tab)); });
+        document.querySelectorAll('.input-currency input, .input-suffix input').forEach(input => { input.addEventListener('keypress', e => { if (e.key === 'Enter') calculate(); }); });
+        setupInputFormats();
+        renderHistory();
+        getElement('saleValue').focus();
+    }
+    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', init); } else { init(); }
+})();
+    </script>
+</body>
+</html>
