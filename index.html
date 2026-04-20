@@ -29,147 +29,294 @@
             </button>
         </header>
 
-        <main class="calculator">
-            <section class="section">
-                <h2 class="section-title">Valores da Venda</h2>
-                <div class="input-group">
-                    <label for="saleValue">Valor de venda</label>
-                    <div class="input-currency">
-                        <span class="currency-prefix">R$</span>
-                        <input type="text" id="saleValue" placeholder="0,00" inputmode="decimal">
-                    </div>
-                </div>
-            </section>
+        <nav class="tabs">
+            <button class="tab active" data-tab="calc">Calculadora</button>
+            <button class="tab" data-tab="reverse">Reversa</button>
+            <button class="tab" data-tab="history">Histórico</button>
+        </nav>
 
-            <section class="section section-fees">
-                <div class="section-header">
-                    <h2 class="section-title">Taxas do Mercado Livre</h2>
-                    <span class="section-badge">Padrão: 10,5% + R$ 5,50</span>
-                </div>
-                <div class="fee-grid">
+        <main class="calculator">
+            <!-- Calculator Tab -->
+            <div class="tab-content active" id="tab-calc">
+                <section class="section">
+                    <h2 class="section-title">Valores da Venda</h2>
                     <div class="input-group">
-                        <label for="feePercent">Percentual</label>
+                        <label for="saleValue">Valor de venda</label>
+                        <div class="input-currency">
+                            <span class="currency-prefix">R$</span>
+                            <input type="text" id="saleValue" placeholder="0,00" inputmode="decimal">
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section section-fees">
+                    <div class="section-header">
+                        <h2 class="section-title">Taxas do Mercado Livre</h2>
+                        <span class="section-badge">Padrão: 10,5% + R$ 5,50</span>
+                    </div>
+                    <div class="fee-grid">
+                        <div class="input-group">
+                            <label for="feePercent">Percentual</label>
+                            <div class="input-suffix">
+                                <input type="text" id="feePercent" value="10,5" inputmode="decimal">
+                                <span class="suffix">%</span>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="feeFixed">Taxa fixa</label>
+                            <div class="input-currency">
+                                <span class="currency-prefix">R$</span>
+                                <input type="text" id="feeFixed" value="5,50" inputmode="decimal">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="section">
+                    <h2 class="section-title">Custos</h2>
+                    <div class="input-group">
+                        <label for="productCost">Custo do produto</label>
+                        <div class="input-currency">
+                            <span class="currency-prefix">R$</span>
+                            <input type="text" id="productCost" placeholder="0,00" inputmode="decimal">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="shipping">Frete pago por você</label>
+                        <div class="input-currency">
+                            <span class="currency-prefix">R$</span>
+                            <input type="text" id="shipping" value="0,00" inputmode="decimal">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="otherExpenses">Outras despesas</label>
+                        <div class="input-currency">
+                            <span class="currency-prefix">R$</span>
+                            <input type="text" id="otherExpenses" value="0,00" inputmode="decimal">
+                        </div>
+                    </div>
+                </section>
+
+                <button class="btn-calculate" id="calculateBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <rect x="4" y="2" width="16" height="20" rx="2"/>
+                        <line x1="8" y1="6" x2="16" y2="6"/>
+                        <line x1="8" y1="10" x2="16" y2="10"/>
+                        <line x1="8" y1="14" x2="12" y2="14"/>
+                    </svg>
+                    Calcular Lucro
+                </button>
+
+                <section class="results" id="results">
+                    <div class="result-actions">
+                        <button class="btn-action" id="saveBtn" title="Salvar">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+                                <polyline points="17 21 17 13 7 13 7 21"/>
+                                <polyline points="7 3 7 8 15 8"/>
+                            </svg>
+                        </button>
+                        <button class="btn-action" id="copyBtn" title="Copiar">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                                <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+                            </svg>
+                        </button>
+                        <button class="btn-action" id="shareBtn" title="Compartilhar">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="18" cy="5" r="3"/>
+                                <circle cx="6" cy="12" r="3"/>
+                                <circle cx="18" cy="19" r="3"/>
+                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="result-hero">
+                        <div class="result-hero-content">
+                            <span class="result-hero-label">Lucro Líquido</span>
+                            <span class="result-hero-value" id="netProfit">R$ 0,00</span>
+                        </div>
+                        <div class="result-hero-badge" id="profitBadge">
+                            <span class="badge-icon">✓</span>
+                            <span class="badge-text">Lucrando</span>
+                        </div>
+                    </div>
+
+                    <div class="result-metric">
+                        <div class="metric-header">
+                            <span class="metric-label">Margem de lucro</span>
+                            <span class="metric-value" id="margin">0%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="marginFill"></div>
+                        </div>
+                    </div>
+
+                    <div class="breakdown">
+                        <button class="breakdown-toggle" id="breakdownToggle">
+                            <span>Detalhamento</span>
+                            <svg class="toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 12 15 18 9"/>
+                            </svg>
+                        </button>
+                        <div class="breakdown-content" id="breakdownContent">
+                            <div class="breakdown-list">
+                                <div class="breakdown-item">
+                                    <span>Valor da venda</span>
+                                    <span id="breakdownSale">R$ 0,00</span>
+                                </div>
+                                <div class="breakdown-item">
+                                    <span>Taxa ML (%)</span>
+                                    <span id="breakdownFeePercent">- R$ 0,00</span>
+                                </div>
+                                <div class="breakdown-item">
+                                    <span>Taxa fixa ML</span>
+                                    <span id="breakdownFeeFixed">- R$ 0,00</span>
+                                </div>
+                                <div class="breakdown-item">
+                                    <span>Custo do produto</span>
+                                    <span id="breakdownCost">- R$ 0,00</span>
+                                </div>
+                                <div class="breakdown-item">
+                                    <span>Frete</span>
+                                    <span id="breakdownShipping">- R$ 0,00</span>
+                                </div>
+                                <div class="breakdown-item">
+                                    <span>Outras despesas</span>
+                                    <span id="breakdownExpenses">- R$ 0,00</span>
+                                </div>
+                                <div class="breakdown-divider"></div>
+                                <div class="breakdown-item total">
+                                    <span>Total de custos</span>
+                                    <span id="breakdownTotalCosts">- R$ 0,00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="mode-toggle">
+                    <label class="switch">
+                        <input type="checkbox" id="simulationMode">
+                        <span class="slider"></span>
+                    </label>
+                    <span class="mode-label">Modo simulação</span>
+                </div>
+            </div>
+
+            <!-- Reverse Calculator Tab -->
+            <div class="tab-content" id="tab-reverse">
+                <section class="section">
+                    <h2 class="section-title">Calculadora Reversa</h2>
+                    <p class="section-desc">Descubra o preço de venda para atingir o lucro desejado</p>
+                    
+                    <div class="input-group">
+                        <label for="targetProfit">Lucro desejado (R$)</label>
+                        <div class="input-currency">
+                            <span class="currency-prefix">R$</span>
+                            <input type="text" id="targetProfit" placeholder="0,00" inputmode="decimal">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="targetMargin">Margem esperada (%)</label>
                         <div class="input-suffix">
-                            <input type="text" id="feePercent" value="10,5" inputmode="decimal">
+                            <input type="text" id="targetMargin" placeholder="0" inputmode="decimal">
                             <span class="suffix">%</span>
                         </div>
                     </div>
+                </section>
+
+                <section class="section section-fees">
+                    <div class="section-header">
+                        <h2 class="section-title">Custos Fixos</h2>
+                    </div>
+                    <div class="fee-grid">
+                        <div class="input-group">
+                            <label for="revFeePercent">Taxa ML (%)</label>
+                            <div class="input-suffix">
+                                <input type="text" id="revFeePercent" value="10,5" inputmode="decimal">
+                                <span class="suffix">%</span>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="revFeeFixed">Taxa fixa (R$)</label>
+                            <div class="input-currency">
+                                <span class="currency-prefix">R$</span>
+                                <input type="text" id="revFeeFixed" value="5,50" inputmode="decimal">
+                            </div>
+                        </div>
+                    </div>
                     <div class="input-group">
-                        <label for="feeFixed">Taxa fixa</label>
+                        <label for="revProductCost">Custo do produto (R$)</label>
                         <div class="input-currency">
                             <span class="currency-prefix">R$</span>
-                            <input type="text" id="feeFixed" value="5,50" inputmode="decimal">
+                            <input type="text" id="revProductCost" placeholder="0,00" inputmode="decimal">
                         </div>
                     </div>
-                </div>
-            </section>
-
-            <section class="section">
-                <h2 class="section-title">Custos</h2>
-                <div class="input-group">
-                    <label for="productCost">Custo do produto</label>
-                    <div class="input-currency">
-                        <span class="currency-prefix">R$</span>
-                        <input type="text" id="productCost" placeholder="0,00" inputmode="decimal">
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label for="shipping">Frete pago por você</label>
-                    <div class="input-currency">
-                        <span class="currency-prefix">R$</span>
-                        <input type="text" id="shipping" value="0,00" inputmode="decimal">
-                    </div>
-                </div>
-                <div class="input-group">
-                    <label for="otherExpenses">Outras despesas</label>
-                    <div class="input-currency">
-                        <span class="currency-prefix">R$</span>
-                        <input type="text" id="otherExpenses" value="0,00" inputmode="decimal">
-                    </div>
-                </div>
-            </section>
-
-            <button class="btn-calculate" id="calculateBtn">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <rect x="4" y="2" width="16" height="20" rx="2"/>
-                    <line x1="8" y1="6" x2="16" y2="6"/>
-                    <line x1="8" y1="10" x2="16" y2="10"/>
-                    <line x1="8" y1="14" x2="12" y2="14"/>
-                </svg>
-                Calcular Lucro
-            </button>
-
-            <section class="results" id="results">
-                <div class="result-hero">
-                    <div class="result-hero-content">
-                        <span class="result-hero-label">Lucro Líquido</span>
-                        <span class="result-hero-value" id="netProfit">R$ 0,00</span>
-                    </div>
-                    <div class="result-hero-badge" id="profitBadge">
-                        <span class="badge-icon">✓</span>
-                        <span class="badge-text">Lucrando</span>
-                    </div>
-                </div>
-
-                <div class="result-metric">
-                    <div class="metric-header">
-                        <span class="metric-label">Margem de lucro</span>
-                        <span class="metric-value" id="margin">0%</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="marginFill"></div>
-                    </div>
-                </div>
-
-                <div class="breakdown">
-                    <button class="breakdown-toggle" id="breakdownToggle">
-                        <span>Detalhamento</span>
-                        <svg class="toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="6 9 12 15 18 9"/>
-                        </svg>
-                    </button>
-                    <div class="breakdown-content" id="breakdownContent">
-                        <div class="breakdown-list">
-                            <div class="breakdown-item">
-                                <span>Valor da venda</span>
-                                <span id="breakdownSale">R$ 0,00</span>
-                            </div>
-                            <div class="breakdown-item">
-                                <span>Taxa ML (%)</span>
-                                <span id="breakdownFeePercent">- R$ 0,00</span>
-                            </div>
-                            <div class="breakdown-item">
-                                <span>Taxa fixa ML</span>
-                                <span id="breakdownFeeFixed">- R$ 0,00</span>
-                            </div>
-                            <div class="breakdown-item">
-                                <span>Custo do produto</span>
-                                <span id="breakdownCost">- R$ 0,00</span>
-                            </div>
-                            <div class="breakdown-item">
-                                <span>Frete</span>
-                                <span id="breakdownShipping">- R$ 0,00</span>
-                            </div>
-                            <div class="breakdown-item">
-                                <span>Outras despesas</span>
-                                <span id="breakdownExpenses">- R$ 0,00</span>
-                            </div>
-                            <div class="breakdown-divider"></div>
-                            <div class="breakdown-item total">
-                                <span>Total de custos</span>
-                                <span id="breakdownTotalCosts">- R$ 0,00</span>
-                            </div>
+                    <div class="input-group">
+                        <label for="revShipping">Frete (R$)</label>
+                        <div class="input-currency">
+                            <span class="currency-prefix">R$</span>
+                            <input type="text" id="revShipping" value="0,00" inputmode="decimal">
                         </div>
                     </div>
-                </div>
-            </section>
+                    <div class="input-group">
+                        <label for="revOtherExpenses">Outras despesas (R$)</label>
+                        <div class="input-currency">
+                            <span class="currency-prefix">R$</span>
+                            <input type="text" id="revOtherExpenses" value="0,00" inputmode="decimal">
+                        </div>
+                    </div>
+                </section>
 
-            <div class="mode-toggle">
-                <label class="switch">
-                    <input type="checkbox" id="simulationMode">
-                    <span class="slider"></span>
-                </label>
-                <span class="mode-label">Modo simulação</span>
+                <button class="btn-calculate" id="calculateReverseBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <polyline points="17 1 21 5 17 9"/>
+                        <path d="M3 11V9a4 4 0 014-4h14"/>
+                        <polyline points="7 23 3 19 7 15"/>
+                        <path d="M21 13v2a4 4 0 01-4 4H3"/>
+                    </svg>
+                    Calcular Preço de Venda
+                </button>
+
+                <section class="results" id="resultsReverse">
+                    <div class="result-hero">
+                        <div class="result-hero-content">
+                            <span class="result-hero-label">Preço de Venda Sugerido</span>
+                            <span class="result-hero-value" id="recommendedPrice">R$ 0,00</span>
+                        </div>
+                    </div>
+
+                    <div class="result-grid">
+                        <div class="result-card">
+                            <span class="result-label">Para margem de</span>
+                            <span class="result-value" id="reverseMarginCalc">0%</span>
+                        </div>
+                        <div class="result-card">
+                            <span class="result-label">Lucro líquido</span>
+                            <span class="result-value" id="reverseProfitCalc">R$ 0,00</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- History Tab -->
+            <div class="tab-content" id="tab-history">
+                <section class="section">
+                    <div class="section-header">
+                        <h2 class="section-title">Histórico de Cálculos</h2>
+                        <button class="btn-small" id="clearHistoryBtn">Limpar</button>
+                    </div>
+                    <div class="history-list" id="historyList">
+                        <div class="history-empty">
+                            <span class="history-empty-icon">📋</span>
+                            <p>Nenhum cálculo salvo</p>
+                            <p class="history-empty-sub">Clique em 💾 para salvar um cálculo</p>
+                        </div>
+                    </div>
+                </section>
             </div>
         </main>
 
